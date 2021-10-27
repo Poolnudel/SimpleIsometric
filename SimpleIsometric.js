@@ -1,10 +1,11 @@
 var feld =  new Array();
-var spielfeldsize = 15;
+var spielfeldsize = 5;
+var score = 0;
 for (let y = 0; y < spielfeldsize; y++) {
   feld[y] = [];
   for (let x = 0; x < spielfeldsize; x++) {
     var nextnummer = Math.round(Math.random());
-    console.log(nextnummer);
+    //console.log(nextnummer);
     feld[y][x] = nextnummer;
   }
 }
@@ -33,10 +34,13 @@ function init() {
   context.canvas.height = window.innerHeight;
 }
 
-
+function Scoreanzeige() {
+  document.getElementById("scoreText").innerHTML = score;
+}
 
 function zeichneFeld() {
  context.clearRect(0,0,canvas.width,canvas.height);
+ Scoreanzeige();
  for (let i=0;i<feld.length;i++)
   for (let j=0;j<feld[i].length;j++) 
   {
@@ -74,6 +78,8 @@ function moveUp() {
    feld[figurY][figurX] = 0;
    figurY--;
    feld[figurY][figurX] = 2;
+   console.log("Figur Y: "+figurY);
+   console.log("Figur X: "+figurX);
    zeichneFeld();
  }
 }
@@ -84,6 +90,8 @@ function moveRight() {
    feld[figurY][figurX] = 0;
    figurX++;
    feld[figurY][figurX] = 2;
+   console.log("Figur Y: "+figurY);
+   console.log("Figur X: "+figurX);
    zeichneFeld();
  }
 }
@@ -94,6 +102,8 @@ function moveDown() {
    feld[figurY][figurX] = 0;
    figurY++;
    feld[figurY][figurX] = 2;
+   console.log("Figur Y: "+figurY);
+   console.log("Figur X: "+figurX);
    zeichneFeld();
  }
 }
@@ -104,6 +114,8 @@ function moveLeft() {
    feld[figurY][figurX] = 0;
    figurX--;
    feld[figurY][figurX] = 2;
+   console.log("Figur Y: "+figurY);
+   console.log("Figur X: "+figurX);
    zeichneFeld();
  }
 }
@@ -112,40 +124,63 @@ function moveLeft() {
  * ReMOVE
  */
 
-function punchUp() {
-  feld[figurY][figurX];
-  figurY--;
-  feld[figurY][figurX] = 0;
-  figurY++;
-  feld[figurY][figurX] = 2;
-  zeichneFeld();
+ function punchUp() {
+  if (feld[figurY-1][figurX]==1)
+  {
+    feld[figurY][figurX];
+    figurY--;
+    feld[figurY][figurX] = 0;
+    figurY++;
+    feld[figurY][figurX] = 2;
+    console.log("punchUp");
+    score++;
+    console.log("Score: "+score);
+    zeichneFeld();
+  }
 }
- 
+
 function punchRight() {
+  if (feld[figurY][figurX+1]==1) {
     feld[figurY][figurX];
     figurX++;
     feld[figurY][figurX] = 0;
     figurX--;
     feld[figurY][figurX] = 2;
+    console.log("punchRight");
+    score++;
+    console.log("Score: "+score);
     zeichneFeld();
+  }
 }
  
 function punchDown() {
+  if (feld[figurY+1][figurX]==1)
+  {
     feld[figurY][figurX];
     figurY++;
     feld[figurY][figurX] = 0;
     figurY--;
     feld[figurY][figurX] = 2;
+    console.log("punchDown");
+    score++;
+    console.log("Score: "+score);
     zeichneFeld();
+  }
 }
  
 function punchLeft() {
+  if (feld[figurY][figurX-1]==1)
+  {
     feld[figurY][figurX];
     figurX--;
     feld[figurY][figurX] = 0;
     figurX++;
     feld[figurY][figurX] = 2;
+    console.log("punchLeft");
+    score++;
+    console.log("Score: "+score);
     zeichneFeld();
+  }
 }
 
 
