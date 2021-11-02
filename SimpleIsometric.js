@@ -1,6 +1,7 @@
 var feld =  new Array();
 var spielfeldsize = 5;
 var score = 0;
+var animtcount = 0;
 for (let y = 0; y < spielfeldsize; y++) {
   feld[y] = [];
   for (let x = 0; x < spielfeldsize; x++) {
@@ -35,10 +36,16 @@ function init() {
 }
 
 function Scoreanzeige() {
-  document.getElementById("scoreText").innerHTML = score;
+  context.font = "30px Zen Kurenaido";
+  context.fillText("Score: "+score, 10, 30);
 }
 
 function zeichneFeld() {
+  console.log("gametick");
+  animtcount++;
+  if (animtcount>10) {
+    animtcount = 0;
+  }
  context.clearRect(0,0,canvas.width,canvas.height);
  Scoreanzeige();
  for (let i=0;i<feld.length;i++)
