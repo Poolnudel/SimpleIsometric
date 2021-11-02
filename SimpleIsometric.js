@@ -21,7 +21,7 @@ kachel.src = "grass5.png";
 //kachel.src = "kachel.gif";
 stein.src = "stone2.png"; 
 //stein.src = "stein.gif";
-figur.src = "Skeleton Idle.gif";
+figur.src = "Skeleton Idle.png";
 //figur.src = "dirt1.png"; 
 //figur.src = "figur.gif";
 var offsetX = 30*spielfeldsize;
@@ -43,7 +43,7 @@ function Scoreanzeige() {
 function zeichneFeld() {
   console.log("gametick");
   animtcount++;
-  if (animtcount>10) {
+  if (animtcount>9) {
     animtcount = 0;
   }
  context.clearRect(0,0,canvas.width,canvas.height);
@@ -70,7 +70,13 @@ function zeichneFeld() {
 	{
     context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
     //isoY -= stein.height/1.2-50;
-	  context.drawImage(figur,isoX+40,isoY-10,figur.width,figur.height);
+    let drawFrameX = 0;
+    for (let i = 0; i < animtcount; i++) {
+      drawFrameX = drawFrameX + 24;
+      
+    }
+    context.drawImage(figur,24+drawFrameX,0,24,figur.height,isoX+40,isoY-10,24,figur.height);
+
 	}
   }
 }
