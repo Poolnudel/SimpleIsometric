@@ -1,5 +1,5 @@
 var feld =  new Array();
-var spielfeldsize = 5;
+var spielfeldsize = 15;
 var score = 0;
 var animtcount = 0;
 for (let y = 0; y < spielfeldsize; y++) {
@@ -13,6 +13,9 @@ for (let y = 0; y < spielfeldsize; y++) {
 var figurX = 1;
 var figurY = 2;
 feld[figurY][figurX] = 2;
+
+/** Zähler für die game loop */
+var counter = 0;
 
 var kachel = new Image();
 var stein = new Image();
@@ -49,8 +52,7 @@ function zeichneFeld() {
  context.clearRect(0,0,canvas.width,canvas.height);
  Scoreanzeige();
  for (let i=0;i<feld.length;i++)
-  for (let j=0;j<feld[i].length;j++) 
-  {
+  for (let j=0;j<feld[i].length;j++) {
 	let x = j*kachel.height+offsetX;
 	let y = i*kachel.height+offsetY;
   let isoX = x-y + offsetX;
@@ -78,6 +80,58 @@ function zeichneFeld() {
     context.drawImage(figur,24+drawFrameX,0,24,figur.height,isoX+40,isoY-10,24,figur.height);
 
 	}
+  }
+  update();
+  setTimeout(zeichneFeld, 10);
+}
+
+function update() {
+  counter++;
+  if (counter %100 == 0) {
+    for (let i=0;i<feld.length;i++)
+      for (let j=0;j<feld[i].length;j++) {
+        let x = j*kachel.height+offsetX;
+	      let y = i*kachel.height+offsetY;
+        let isoX = x-y + offsetX;
+        let isoY = (x+y)/2;
+	      if (feld[i][j]==0) {
+          /**Update für normales feld */
+          //var newfeld = Math.round(Math.random());
+          //feld[i][j] = newfeld;
+        }
+        if (feld[i][j]==1) {
+          /**Update für stein */
+          if (feld[i+1][j] == 0) {
+            feld[i][j] == 0;
+            feld[i+1][j] == 1;
+            console.log("move X");
+          } else if (feld[i][j+1] == 0) {
+            feld[i][j] == 0;
+            feld[i][j+1] == 1;
+            console.log("move Y");
+          }
+          
+        }
+    }
+  }
+}
+
+function moveStein(i, j) {
+  /**
+   * cord ruckgabe
+   */
+  var rv = 0;
+  if (feld[i+1][j]==0) {
+    
+  }
+  if (feld[i-1][j]==0) {
+
+  }
+  if (feld[i][j+1]==0) {
+
+  }
+  if (feld[i][j-1]==0) {
+
   }
 }
 
