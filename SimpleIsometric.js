@@ -6,6 +6,7 @@ for (let y = 0; y < spielfeldsize; y++) {
   feld[y] = [];
   for (let x = 0; x < spielfeldsize; x++) {
     var nextnummer = Math.round(Math.random());
+    //TO DO// feind gen
     //console.log(nextnummer);
     feld[y][x] = nextnummer;
   }
@@ -18,15 +19,18 @@ feld[figurY][figurX] = 2;
 var counter = 0;
 
 var kachel = new Image();
+kachel.src = "grass5.png";
+
 var stein = new Image();
+stein.src = "stone2.png";
+
 var figur = new Image();
-kachel.src = "grass5.png"; 
-//kachel.src = "kachel.gif";
-stein.src = "stone2.png"; 
-//stein.src = "stein.gif";
 figur.src = "Skeleton Idle.png";
-//figur.src = "dirt1.png"; 
-//figur.src = "figur.gif";
+
+var feind = new Image();
+feind.scr = "Feind Idle.png";
+
+
 var offsetX = 30*spielfeldsize;
 var offsetY = 0;
 var canvas, context;
@@ -80,9 +84,21 @@ function zeichneFeld() {
     context.drawImage(figur,24+drawFrameX,0,24,figur.height,isoX+40,isoY-10,24,figur.height);
 
 	}
+  if (feld[i][j]==3) //Feind
+	{
+    context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
+    //isoY -= stein.height/1.2-50;
+    let drawFrameX = 0;
+    for (let i = 0; i < animtcount; i++) {
+      drawFrameX = drawFrameX + 24;
+      
+    }
+    context.drawImage(feind,24+drawFrameX,0,24,feind.height,isoX+40,isoY-10,24,feind.height);
+
+	}
   }
   update();
-  setTimeout(zeichneFeld, 10);
+  setTimeout(zeichneFeld, 100);
 }
 
 function update() {
@@ -98,9 +114,9 @@ function update() {
           /**Update für normales feld */
           //var newfeld = Math.round(Math.random());
           //feld[i][j] = newfeld;
-        }
+        } /**
         if (feld[i][j]==1) {
-          /**Update für stein */
+          //Update für stein
           if (feld[i+1][j] == 0) {
             feld[i][j] == 0;
             feld[i+1][j] == 1;
@@ -111,7 +127,7 @@ function update() {
             console.log("move Y");
           }
           
-        }
+        }*/
     }
   }
 }
@@ -147,7 +163,7 @@ function moveUp() {
    feld[figurY][figurX] = 2;
    console.log("Figur Y: "+figurY);
    console.log("Figur X: "+figurX);
-   zeichneFeld();
+   update();
  }
 }
 
@@ -159,7 +175,7 @@ function moveRight() {
    feld[figurY][figurX] = 2;
    console.log("Figur Y: "+figurY);
    console.log("Figur X: "+figurX);
-   zeichneFeld();
+   update();
  }
 }
 
@@ -171,7 +187,7 @@ function moveDown() {
    feld[figurY][figurX] = 2;
    console.log("Figur Y: "+figurY);
    console.log("Figur X: "+figurX);
-   zeichneFeld();
+   update();
  }
 }
 
@@ -183,7 +199,7 @@ function moveLeft() {
    feld[figurY][figurX] = 2;
    console.log("Figur Y: "+figurY);
    console.log("Figur X: "+figurX);
-   zeichneFeld();
+   update();
  }
 }
 
@@ -202,7 +218,7 @@ function moveLeft() {
     console.log("punchUp");
     score++;
     console.log("Score: "+score);
-    zeichneFeld();
+    update();
   }
 }
 
@@ -216,7 +232,7 @@ function punchRight() {
     console.log("punchRight");
     score++;
     console.log("Score: "+score);
-    zeichneFeld();
+    update();
   }
 }
  
@@ -231,7 +247,7 @@ function punchDown() {
     console.log("punchDown");
     score++;
     console.log("Score: "+score);
-    zeichneFeld();
+    update();
   }
 }
  
@@ -246,7 +262,7 @@ function punchLeft() {
     console.log("punchLeft");
     score++;
     console.log("Score: "+score);
-    zeichneFeld();
+    update();
   }
 }
 
