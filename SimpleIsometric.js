@@ -7,8 +7,21 @@ for (let y = 0; y < spielfeldsize; y++) {
   for (let x = 0; x < spielfeldsize; x++) {
     var nextnummer = Math.round(Math.random());
     //TO DO// feind gen
-    //console.log(nextnummer);
-    feld[y][x] = nextnummer;
+    if (nextnummer == 1) {
+      var feindgen = Math.round(Math.random());
+      if (feindgen == 1) {
+        nextnummer = 3;
+        console.log(nextnummer);
+        feld[y][x] = nextnummer;
+      } else {
+        nextnummer = 1;
+        console.log(nextnummer);
+        feld[y][x] = nextnummer;
+      }
+    } else {
+      console.log(nextnummer);
+      feld[y][x] = nextnummer;  
+    }
   }
 }
 var figurX = 1;
@@ -28,7 +41,7 @@ var figur = new Image();
 figur.src = "Skeleton Idle.png";
 
 var feind = new Image();
-feind.scr = "Feind Idle.png";
+feind.src = "Feind Idle.png";
 
 
 var offsetX = 30*spielfeldsize;
@@ -208,7 +221,7 @@ function moveLeft() {
  */
 
  function punchUp() {
-  if (feld[figurY-1][figurX]==1)
+  if (feld[figurY-1][figurX]==3)
   {
     feld[figurY][figurX];
     figurY--;
@@ -223,7 +236,7 @@ function moveLeft() {
 }
 
 function punchRight() {
-  if (feld[figurY][figurX+1]==1) {
+  if (feld[figurY][figurX+1]==3) {
     feld[figurY][figurX];
     figurX++;
     feld[figurY][figurX] = 0;
@@ -237,7 +250,7 @@ function punchRight() {
 }
  
 function punchDown() {
-  if (feld[figurY+1][figurX]==1)
+  if (feld[figurY+1][figurX]==3)
   {
     feld[figurY][figurX];
     figurY++;
@@ -252,7 +265,7 @@ function punchDown() {
 }
  
 function punchLeft() {
-  if (feld[figurY][figurX-1]==1)
+  if (feld[figurY][figurX-1]==3)
   {
     feld[figurY][figurX];
     figurX--;
