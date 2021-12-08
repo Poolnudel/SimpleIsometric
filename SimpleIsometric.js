@@ -6,21 +6,33 @@ for (let y = 0; y < spielfeldsize; y++) {
   feld[y] = [];
   for (let x = 0; x < spielfeldsize; x++) {
     var nextnummer = Math.round(Math.random());
-    //TO DO// feind gen
     if (nextnummer == 1) {
-      var feindgen = Math.round(Math.random());
-      if (feindgen == 1) {
-        nextnummer = 3;
-        console.log(nextnummer);
-        feld[y][x] = nextnummer;
+      var wenigerfeinde  = Math.round(Math.random());
+      if (wenigerfeinde == 1) {
+        if (nextnummer == 1) {
+          var feindgen = Math.round(Math.random());
+          if (feindgen == 1) {
+            nextnummer = 3;
+            console.log(nextnummer);
+            feld[y][x] = nextnummer;
+          } else {
+            nextnummer = 1;
+            console.log(nextnummer);
+            feld[y][x] = nextnummer;
+          }
+        } else {
+          nextnummer = 0;
+          console.log(nextnummer);
+          feld[y][x] = nextnummer;  
+        }
       } else {
-        nextnummer = 1;
+        nextnummer = 0;
         console.log(nextnummer);
-        feld[y][x] = nextnummer;
+        feld[y][x] = nextnummer;  
       }
     } else {
       console.log(nextnummer);
-      feld[y][x] = nextnummer;  
+      feld[y][x] = nextnummer; 
     }
   }
 }
@@ -38,7 +50,7 @@ var stein = new Image();
 stein.src = "stone2.png";
 
 var figur = new Image();
-figur.src = "Skeleton Idle.png";
+figur.src = "Skeleton test.png";
 
 var feind = new Image();
 feind.src = "Feind Idle.png";
