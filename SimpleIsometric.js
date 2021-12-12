@@ -1,5 +1,5 @@
 var feld =  new Array();
-var spielfeldsize = 15;
+var spielfeldsize = 5;
 var score = 0;
 var animtcount = 0;
 for (let y = 0; y < spielfeldsize; y++) {
@@ -13,29 +13,35 @@ for (let y = 0; y < spielfeldsize; y++) {
           var feindgen = Math.round(Math.random());
           if (feindgen == 1) {
             nextnummer = 3;
-            console.log(nextnummer);
+            //console.log(nextnummer);
             feld[y][x] = nextnummer;
           } else {
             nextnummer = 1;
-            console.log(nextnummer);
+            //console.log(nextnummer);
             feld[y][x] = nextnummer;
           }
         } else {
           nextnummer = 0;
-          console.log(nextnummer);
+          //console.log(nextnummer);
           feld[y][x] = nextnummer;  
         }
       } else {
         nextnummer = 0;
-        console.log(nextnummer);
+        //console.log(nextnummer);
         feld[y][x] = nextnummer;  
       }
     } else {
-      console.log(nextnummer);
+      //console.log(nextnummer);
       feld[y][x] = nextnummer; 
     }
   }
 }
+
+var sieg = 0;
+var msg;
+var indx=[0,0];
+var gegnerAnzahl = 0;
+
 var figurX = 1;
 var figurY = 2;
 feld[figurY][figurX] = 2;
@@ -55,7 +61,6 @@ figur.src = "Skeleton test.png";
 var feind = new Image();
 feind.src = "Feind Idle.png";
 
-
 var offsetX = 30*spielfeldsize;
 var offsetY = 0;
 var canvas, context;
@@ -70,6 +75,37 @@ function init() {
 function Scoreanzeige() {
   context.font = "30px Zen Kurenaido";
   context.fillText("Score: "+score, 10, 30);
+}
+
+function gegnerCheck() {
+/** Gegner check */
+  var feldTest = 3;
+
+  for (var i=0; i<feld.length; i++) {
+    for (var k=0; k<feld[i].length; k++) {
+      if (feld[i][k] === feldTest) {
+        //indx = [i,k];
+        gegnerAnzahl++;
+      }  
+    }
+  }
+
+  if (typeof indx[0] == "undefined" || typeof indx[1] == "undefined") { 
+    msg = ("Not found");
+  }
+  if (gegnerAnzahl == 0) {
+    msg = "Sieg";
+    sieg = 1;
+  } else {
+    msg = "Kein Sieg";
+    sieg = 0;
+  }
+  console.log(indx);
+  console.log(msg);
+}
+
+function siegAnzeige() {
+  alert("Sieg");
 }
 
 function zeichneFeld() {
@@ -127,33 +163,46 @@ function zeichneFeld() {
 }
 
 function update() {
-  counter++;
-  if (counter %100 == 0) {
-    for (let i=0;i<feld.length;i++)
-      for (let j=0;j<feld[i].length;j++) {
-        let x = j*kachel.height+offsetX;
-	      let y = i*kachel.height+offsetY;
-        let isoX = x-y + offsetX;
-        let isoY = (x+y)/2;
-	      if (feld[i][j]==0) {
-          /**Update für normales feld */
-          //var newfeld = Math.round(Math.random());
-          //feld[i][j] = newfeld;
-        } /**
-        if (feld[i][j]==1) {
-          //Update für stein
-          if (feld[i+1][j] == 0) {
-            feld[i][j] == 0;
-            feld[i+1][j] == 1;
-            console.log("move X");
-          } else if (feld[i][j+1] == 0) {
-            feld[i][j] == 0;
-            feld[i][j+1] == 1;
-            console.log("move Y");
+  console.log("A: "+gegnerAnzahl);
+  switch (sieg) {
+    case 0:
+      counter++;
+      gegnerAnzahl = 0;
+      gegnerCheck();
+      if (counter %100 == 0) {
+        for (let i=0;i<feld.length;i++) 
+          for (let j=0;j<feld[i].length;j++) {
+            let x = j*kachel.height+offsetX;
+	          let y = i*kachel.height+offsetY;
+            let isoX = x-y + offsetX;
+            let isoY = (x+y)/2;
+	          if (feld[i][j]==0) {
+              /**Update für normales feld */
+              //var newfeld = Math.round(Math.random());
+              //feld[i][j] = newfeld;
+            } /**
+            if (feld[i][j]==1) {
+              //Update für stein
+              if (feld[i+1][j] == 0) {
+                feld[i][j] == 0;
+                feld[i+1][j] == 1;
+                console.log("move X");
+              } else if (feld[i][j+1] == 0) {
+                feld[i][j] == 0;
+                feld[i][j+1] == 1;
+                console.log("move Y");
+              }
+
+            }*/
           }
-          
-        }*/
-    }
+      }
+      break;
+    case 1:
+      console.log(sieg);
+      siegAnzeige();
+      break;
+    default:
+    break;
   }
 }
 
