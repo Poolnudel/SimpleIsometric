@@ -51,15 +51,22 @@ var player = {
 	},
   movePlayer: function(dx, dy) {
     if (freiesFeld(player.x+dx, player.y+dy)) {
-      player.liftFigur();
+      player.liftPlayer();
       player.x += dx;
       player.y += dy;
-      player.digGold();
-      player.setFigur();
+      player.setPlayer();
+    }
+  },
+  punchFeind: function(dx, dy) {
+    if (feindFeld(player.x+dx, player.y+dy)) {
+      player.liftPlayer();
+      player.x += dx;
+      player.y += dy;
+      player.setPlayer();
     }
   },
 	digGold: function() {
-		if ( feld[this.y][this.x] == -3 ) {
+		if ( feld[this.y][this.x] == 3 ) {
 			this.score++;
 		}
 	}
@@ -142,6 +149,30 @@ function gegnerCheck() {
   console.log(msg);
 }
 
+function freiesFeld(x,y) 
+{
+  if ( y>=0 && y<feld.length && x>=0 && x<feld[y].length ) 
+  {
+	return ( feld[y][x] <= 0 ); 
+  } 
+  else 
+  {
+	return false;
+  }
+}
+
+function feindFeld(x,y) 
+{
+  if ( y==3 && y<feld.length && x==3 && x<feld[y].length ) 
+  {
+	return ( feld[y][x] == 3 ); 
+  } 
+  else 
+  {
+	return false;
+  }
+}
+
 function siegAnzeige() {
   alert("Sieg");
 }
@@ -192,7 +223,7 @@ function zeichneFeld() {
       drawFrameX = drawFrameX + 24;
       
     }
-    context.drawImage(feind,24+drawFrameX,0,24,feind.height,isoX+40,isoY-10,24,feind.height);
+    context.drawImage(feindIdel.img,24+drawFrameX,0,24,feindIdel.img.height,isoX+40,isoY-10,24,feindIdel.img.height);
 
 	}
   }
