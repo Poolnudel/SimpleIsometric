@@ -37,14 +37,49 @@ for (let y = 0; y < spielfeldsize; y++) {
   }
 }
 
+var player = {
+	x: 1,
+	y: 2,
+  img: new Image(),
+
+	//score: 0,
+	setPlayer: function() {
+		feld[this.y][this.x] = 2;
+	},
+	liftPlayer: function() {
+		feld[this.y][this.x] = 0;
+	},
+  movePlayer: function(dx, dy) {
+    if (freiesFeld(player.x+dx, player.y+dy)) {
+      player.liftFigur();
+      player.x += dx;
+      player.y += dy;
+      player.digGold();
+      player.setFigur();
+    }
+  },
+	digGold: function() {
+		if ( feld[this.y][this.x] == -3 ) {
+			this.score++;
+		}
+	}
+}
+
+class Feind {
+  constructor(name) {
+    this.img = new Image();
+    this.img.src = name;
+    
+  }
+  setFeind() {
+		  feld[this.y][this.x] = 3;
+	  }
+}
+
 var sieg = 0;
 var msg;
 var indx=[0,0];
 var gegnerAnzahl = 0;
-
-var figurX = 1;
-var figurY = 2;
-feld[figurY][figurX] = 2;
 
 /** Zähler für die game loop */
 var counter = 0;
@@ -55,11 +90,11 @@ kachel.src = "grass5.png";
 var stein = new Image();
 stein.src = "stone2.png";
 
-var figur = new Image();
-figur.src = "Skeleton test.png";
+//var figur = new Image();
+player.img.src = "Skeleton test.png";
 
-var feind = new Image();
-feind.src = "Feind Idle.png";
+var feindIdel = new Feind("Feind Idle.png");
+
 
 var offsetX = 30*spielfeldsize;
 var offsetY = 0;
@@ -70,6 +105,9 @@ function init() {
   context = canvas.getContext("2d");
   context.canvas.width = window.innerWidth;
   context.canvas.height = window.innerHeight;
+  //canvas.addEventListener("keydown", handleKeydown);
+  canvas.focus();
+  player.setPlayer(); // Spielerfigur auf Startposition setzen 
 }
 
 function Scoreanzeige() {
@@ -133,7 +171,7 @@ function zeichneFeld() {
     isoY -= stein.height/1.2-50;
 	  context.drawImage(stein,isoX,isoY,stein.width,stein.height/1.2);
 	}
-	if (feld[i][j]==2) //Spielfigur
+	if (feld[i][j]==2) //Spielplayer
 	{
     context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
     //isoY -= stein.height/1.2-50;
@@ -142,7 +180,7 @@ function zeichneFeld() {
       drawFrameX = drawFrameX + 24;
       
     }
-    context.drawImage(figur,24+drawFrameX,0,24,figur.height,isoX+40,isoY-10,24,figur.height);
+    context.drawImage(player.img,24+drawFrameX,0,24,player.img.height,isoX+40,isoY-10,24,player.img.height);
 
 	}
   if (feld[i][j]==3) //Feind
@@ -169,33 +207,6 @@ function update() {
       counter++;
       gegnerAnzahl = 0;
       gegnerCheck();
-      if (counter %100 == 0) {
-        for (let i=0;i<feld.length;i++) 
-          for (let j=0;j<feld[i].length;j++) {
-            let x = j*kachel.height+offsetX;
-	          let y = i*kachel.height+offsetY;
-            let isoX = x-y + offsetX;
-            let isoY = (x+y)/2;
-	          if (feld[i][j]==0) {
-              /**Update für normales feld */
-              //var newfeld = Math.round(Math.random());
-              //feld[i][j] = newfeld;
-            } /**
-            if (feld[i][j]==1) {
-              //Update für stein
-              if (feld[i+1][j] == 0) {
-                feld[i][j] == 0;
-                feld[i+1][j] == 1;
-                console.log("move X");
-              } else if (feld[i][j+1] == 0) {
-                feld[i][j] == 0;
-                feld[i][j+1] == 1;
-                console.log("move Y");
-              }
-
-            }*/
-          }
-      }
       break;
     case 1:
       console.log(sieg);
@@ -206,89 +217,29 @@ function update() {
   }
 }
 
-function moveStein(i, j) {
-  /**
-   * cord ruckgabe
-   */
-  var rv = 0;
-  if (feld[i+1][j]==0) {
-    
+function animation(aniType, ) {
+  switch (aniType) {
+    case value:
+      
+      break;
+  
+    default:
+      break;
   }
-  if (feld[i-1][j]==0) {
-
-  }
-  if (feld[i][j+1]==0) {
-
-  }
-  if (feld[i][j-1]==0) {
-
-  }
-}
-
-/**
- * MOVE
- */
-
-function moveUp() {
- if (figurY>0 && feld[figurY-1][figurX]==0)
- {
-   feld[figurY][figurX] = 0;
-   figurY--;
-   feld[figurY][figurX] = 2;
-   console.log("Figur Y: "+figurY);
-   console.log("Figur X: "+figurX);
-   update();
- }
-}
-
-function moveRight() {
- if (figurX<feld[figurY].length && feld[figurY][figurX+1]==0)
- {
-   feld[figurY][figurX] = 0;
-   figurX++;
-   feld[figurY][figurX] = 2;
-   console.log("Figur Y: "+figurY);
-   console.log("Figur X: "+figurX);
-   update();
- }
-}
-
-function moveDown() {
- if (figurY<feld.length && feld[figurY+1][figurX]==0)
- {
-   feld[figurY][figurX] = 0;
-   figurY++;
-   feld[figurY][figurX] = 2;
-   console.log("Figur Y: "+figurY);
-   console.log("Figur X: "+figurX);
-   update();
- }
-}
-
-function moveLeft() {
- if (figurX>0 && feld[figurY][figurX-1]==0)
- {
-   feld[figurY][figurX] = 0;
-   figurX--;
-   feld[figurY][figurX] = 2;
-   console.log("Figur Y: "+figurY);
-   console.log("Figur X: "+figurX);
-   update();
- }
 }
 
 /**
  * ReMOVE
- */
+ *
 
  function punchUp() {
-  if (feld[figurY-1][figurX]==3)
+  if (feld[player.y-1][player.x]==3)
   {
-    feld[figurY][figurX];
-    figurY--;
-    feld[figurY][figurX] = 0;
-    figurY++;
-    feld[figurY][figurX] = 2;
+    feld[player.y][player.x];
+    player.y--;
+    feld[player.y][player.x] = 0;
+    player.y++;
+    feld[player.y][player.x] = 2;
     console.log("punchUp");
     score++;
     console.log("Score: "+score);
@@ -297,12 +248,12 @@ function moveLeft() {
 }
 
 function punchRight() {
-  if (feld[figurY][figurX+1]==3) {
-    feld[figurY][figurX];
-    figurX++;
-    feld[figurY][figurX] = 0;
-    figurX--;
-    feld[figurY][figurX] = 2;
+  if (feld[player.y][player.x+1]==3) {
+    feld[player.y][player.x];
+    player.x++;
+    feld[player.y][player.x] = 0;
+    player.x--;
+    feld[player.y][player.x] = 2;
     console.log("punchRight");
     score++;
     console.log("Score: "+score);
@@ -311,13 +262,13 @@ function punchRight() {
 }
  
 function punchDown() {
-  if (feld[figurY+1][figurX]==3)
+  if (feld[player.y+1][player.x]==3)
   {
-    feld[figurY][figurX];
-    figurY++;
-    feld[figurY][figurX] = 0;
-    figurY--;
-    feld[figurY][figurX] = 2;
+    feld[player.y][player.x];
+    player.y++;
+    feld[player.y][player.x] = 0;
+    player.y--;
+    feld[player.y][player.x] = 2;
     console.log("punchDown");
     score++;
     console.log("Score: "+score);
@@ -326,20 +277,20 @@ function punchDown() {
 }
  
 function punchLeft() {
-  if (feld[figurY][figurX-1]==3)
+  if (feld[player.y][player.x-1]==3)
   {
-    feld[figurY][figurX];
-    figurX--;
-    feld[figurY][figurX] = 0;
-    figurX++;
-    feld[figurY][figurX] = 2;
+    feld[player.y][player.x];
+    player.x--;
+    feld[player.y][player.x] = 0;
+    player.x++;
+    feld[player.y][player.x] = 2;
     console.log("punchLeft");
     score++;
     console.log("Score: "+score);
     update();
   }
 }
-
+*/
 
 window.onkeydown = function (e) {
   var code = e.keyCode ? e.keyCode : e.which;
@@ -347,30 +298,30 @@ window.onkeydown = function (e) {
     default:
       break;
     //move
-    case 87: //38
-      moveUp();
+    case 87:
+      player.movePlayer(0,-1);
       break;
-    case 83: //40
-      moveDown();
+    case 83:
+      player.movePlayer(0,1);
       break;
-    case 68: //39
-      moveRight();
+    case 68:
+      player.movePlayer(1,0);
       break;
-    case 65: //37
-      moveLeft();
+    case 65:
+      player.movePlayer(-1,0);
       break;
     //punch
     case 104:
-      punchUp();
+      player.punchFeind(0,-1);
       break;
     case 98:
-      punchDown();
+      player.punchFeind(0,1);
       break;
     case 102:
-      punchRight();
+      player.punchFeind(1,0);
       break;
     case 100:
-      punchLeft();
+      player.punchFeind(-1,0);
       break;
   }
 }
