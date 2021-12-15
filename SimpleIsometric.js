@@ -50,6 +50,10 @@ var player = {
 		feld[this.y][this.x] = 0;
 	},
   movePlayer: function(dx, dy) {
+    /**Das ergibt alles keinen Sinn
+     * help
+     * me
+     */
     if (freiesFeld(player.x+dx, player.y+dy)) {
       player.liftPlayer();
       player.x += dx;
@@ -58,11 +62,13 @@ var player = {
     }
   },
   punchFeind: function(dx, dy) {
-    if (feindFeld(player.x+dx, player.y+dy)) {
-      player.liftPlayer();
-      player.x += dx;
-      player.y += dy;
-      player.setPlayer();
+    console.log("dx: "+dx+" dy: "+dy);
+    console.log("player.y: "+player.x+" player.y: "+player.y);
+    console.log("player.x+dx: "+(player.x+dx)+" player.y+dy: "+(player.y+dy));
+    if (feindFeld(feld[player.x+dx][player.y+dy])) {
+      console.log("punch");
+      score++;
+      feld[player.y+dy][player.x+dx] = 0;
     }
   },
 	digGold: function() {
@@ -145,8 +151,8 @@ function gegnerCheck() {
     msg = "Kein Sieg";
     sieg = 0;
   }
-  console.log(indx);
-  console.log(msg);
+  //console.log(indx);
+  //console.log(msg);
 }
 
 function freiesFeld(x,y) 
@@ -163,7 +169,8 @@ function freiesFeld(x,y)
 
 function feindFeld(x,y) 
 {
-  if ( y==3 && y<feld.length && x==3 && x<feld[y].length ) 
+  if (feld[player.x+dx][player.y+dy] == 3)
+  //if ( y==3 && x==3 )
   {
 	return ( feld[y][x] == 3 ); 
   } 
@@ -232,7 +239,7 @@ function zeichneFeld() {
 }
 
 function update() {
-  console.log("A: "+gegnerAnzahl);
+  //console.log("A: "+gegnerAnzahl);
   switch (sieg) {
     case 0:
       counter++;
@@ -344,15 +351,19 @@ window.onkeydown = function (e) {
     //punch
     case 104:
       player.punchFeind(0,-1);
+      console.log("punchKey");
       break;
     case 98:
       player.punchFeind(0,1);
+      console.log("punchKey");
       break;
     case 102:
       player.punchFeind(1,0);
+      console.log("punchKey");
       break;
     case 100:
       player.punchFeind(-1,0);
+      console.log("punchKey");
       break;
   }
 }
