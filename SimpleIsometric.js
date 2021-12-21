@@ -62,17 +62,17 @@ var player = {
     }
   },
   punchFeind: function(dx, dy) {
-    console.log("dx: "+dx+" dy: "+dy);
-    console.log("player.y: "+player.x+" player.y: "+player.y);
-    console.log("player.x+dx: "+(player.x+dx)+" player.y+dy: "+(player.y+dy));
-    if (feindFeld(feld[player.x+dx][player.y+dy])) {
-      console.log("punch");
-      score++;
-      feld[player.y+dy][player.x+dx] = 0;
-    }
+    var zielx = this.x+dx;
+    var ziely = this.y+dy;
+      if (feindFeld(zielx,ziely)) {
+        console.log("punch");
+        score++;
+        //feld[zielx][ziely] = 0;
+        feld[this.y+dy][this.x+dx] = 0;
+      }
   },
 	digGold: function() {
-		if ( feld[this.y][this.x] == 3 ) {
+		if ( feld[this.y+dy][this.x+dx] == 3 ) {
 			this.score++;
 		}
 	}
@@ -169,13 +169,12 @@ function freiesFeld(x,y)
 
 function feindFeld(x,y) 
 {
-  if (feld[player.x+dx][player.y+dy] == 3)
+  if (feld[y][x] == 3) {
   //if ( y==3 && x==3 )
-  {
-	return ( feld[y][x] == 3 ); 
-  } 
-  else 
-  {
+  console.log("Feind Feld: "+x+y);
+	return true; //( feld[y][x] == 3 )
+  } else {
+  console.log("Feind Feld: "+x+y);
 	return false;
   }
 }
@@ -185,7 +184,7 @@ function siegAnzeige() {
 }
 
 function zeichneFeld() {
-  console.log("gametick");
+  //console.log("gametick");
   animtcount++;
   if (animtcount>9) {
     animtcount = 0;
