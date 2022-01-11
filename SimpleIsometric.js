@@ -1,5 +1,6 @@
 var feld =  new Array();
-var spielfeldsize = 5;
+var eingabe = prompt("Wie groß soll das Feld sein?");
+var spielfeldsize = eingabe;
 var score = 0;
 var animtcount = 0;
 for (let y = 0; y < spielfeldsize; y++) {
@@ -90,6 +91,7 @@ class Feind {
 }
 
 var sieg = 0;
+var zeit = 0;
 var msg;
 var indx=[0,0];
 var gegnerAnzahl = 0;
@@ -109,8 +111,8 @@ player.img.src = "Skeleton test.png";
 var feindIdel = new Feind("Feind Idle.png");
 
 
-var offsetX = 30*spielfeldsize;
-var offsetY = 0;
+var offsetX = 25*spielfeldsize;
+var offsetY = -200;
 var canvas, context;
 
 function init() {
@@ -121,11 +123,17 @@ function init() {
   //canvas.addEventListener("keydown", handleKeydown);
   canvas.focus();
   player.setPlayer(); // Spielerfigur auf Startposition setzen 
+  zeit = Math.round(spielfeldsize*30+(15*Math.random()));
 }
 
 function Scoreanzeige() {
   context.font = "30px Zen Kurenaido";
   context.fillText("Score: "+score, 10, 30);
+}
+
+function zeitAnzeige() {
+  context.font = "30px Zen Kurenaido";
+  context.fillText("Zeit: "+zeit, 10, 60);
 }
 
 function gegnerCheck() {
@@ -180,7 +188,59 @@ function feindFeld(x,y)
 }
 
 function siegAnzeige() {
-  alert("Sieg");
+  context.clearRect(0,0,canvas.width,canvas.height);
+  siegText();
+  playerAnzeige();
+  setTimeout(siegAnzeige, 100);
+}
+
+function lossAnzeige() {
+  context.clearRect(0,0,canvas.width,canvas.height);
+  lossText();
+  gegnerAnzeige();
+  setTimeout(lossAnzeige, 100);
+}
+
+function playerAnzeige() {
+  for (let i=0;i<feld.length;i++)
+    for (let j=0;j<feld[i].length;j++) {
+      let x = j*kachel.height+offsetX;
+      let y = i*kachel.height+offsetY;
+      let isoX = x-y + offsetX;
+      let isoY = (x+y)/2;
+      let drawFrameX = 0;
+      for (let i = 0; i < animtcount; i++) {
+        drawFrameX = drawFrameX + 24;
+      }
+      context.drawImage(player.img,24+drawFrameX,0,24,player.img.height,isoX+40,isoY-10,24,player.img.height);
+    } 
+}
+
+function siegText() {
+  context.font = "50px Zen Kurenaido";
+  context.fillText("SIEG!", window.innerWidth/2, window.innerHeight/2);
+  context.fillText("Score: "+score, window.innerWidth/2, 36+window.innerHeight/2);
+}
+
+function gegnerAnzeige() {
+  for (let i=0;i<feld.length;i++)
+    for (let j=0;j<feld[i].length;j++) {
+      let x = j*kachel.height+offsetX;
+      let y = i*kachel.height+offsetY;
+      let isoX = x-y + offsetX;
+      let isoY = (x+y)/2;
+      let drawFrameX = 0;
+      for (let i = 0; i < animtcount; i++) {
+        drawFrameX = drawFrameX + 24;
+      }
+      context.drawImage(feindIdel.img,24+drawFrameX,0,24,feindIdel.img.height,isoX+40,isoY-10,24,feindIdel.img.height);
+    } 
+}
+
+function lossText() {
+  context.font = "50px Zen Kurenaido";
+  context.fillText("LOSS!", window.innerWidth/2, window.innerHeight/2);
+  context.fillText("Score: "+score, window.innerWidth/2, 36+window.innerHeight/2);
 }
 
 function zeichneFeld() {
@@ -199,46 +259,68 @@ function zeichneFeld() {
   let isoY = (x+y)/2;
 	if (feld[i][j]==0)	//normale Kachel
 	{
-    //isoY += 10;
-	  context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
+    grassDraw(isoX,isoY);
 	}
 	if (feld[i][j]==1) //Hindernis
 	{
-    context.drawImage(stein,isoX,isoY,stein.width,stein.height/1.2);
-    isoY -= stein.height/1.2-50;
-	  context.drawImage(stein,isoX,isoY,stein.width,stein.height/1.2);
+    steinDraw(isoX,isoY);
 	}
 	if (feld[i][j]==2) //Spielplayer
 	{
-    context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
-    //isoY -= stein.height/1.2-50;
-    let drawFrameX = 0;
-    for (let i = 0; i < animtcount; i++) {
-      drawFrameX = drawFrameX + 24;
-      
-    }
-    context.drawImage(player.img,24+drawFrameX,0,24,player.img.height,isoX+40,isoY-10,24,player.img.height);
-
+    playerDraw(isoX,isoY);
 	}
   if (feld[i][j]==3) //Feind
 	{
-    context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
-    //isoY -= stein.height/1.2-50;
-    let drawFrameX = 0;
-    for (let i = 0; i < animtcount; i++) {
-      drawFrameX = drawFrameX + 24;
-      
-    }
-    context.drawImage(feindIdel.img,24+drawFrameX,0,24,feindIdel.img.height,isoX+40,isoY-10,24,feindIdel.img.height);
-
+    feindDraw(isoX,isoY);
 	}
   }
+  zeitAnzeige();
   update();
   setTimeout(zeichneFeld, 100);
+  if (zeit <= 0) {
+    sieg = 2;
+  } else {
+    zeit = zeit - 1;
+    console.log("Zeit: "+zeit);
+  }
+}
+
+function grassDraw(isoX,isoY) {
+  context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
+}
+
+function steinDraw(isoX,isoY) {
+  context.drawImage(stein,isoX,isoY,stein.width,stein.height/1.2);
+  isoY -= stein.height/1.2-50;
+  context.drawImage(stein,isoX,isoY,stein.width,stein.height/1.2);
+}
+
+function playerDraw(isoX,isoY) {
+  
+  context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
+  //isoY -= stein.height/1.2-50;
+  let drawFrameX = 0;
+  for (let i = 0; i < animtcount; i++) {
+    drawFrameX = drawFrameX + 24;
+  }
+  context.drawImage(player.img,24+drawFrameX,0,24,player.img.height,isoX+40,isoY-10,24,player.img.height);
+}
+
+function feindDraw(isoX,isoY) {
+  
+  context.drawImage(kachel,isoX,isoY,kachel.width,kachel.height/0.8);
+  //isoY -= stein.height/1.2-50;
+  let drawFrameX = 0;
+  for (let i = 0; i < animtcount; i++) {
+    drawFrameX = drawFrameX + 24;
+    
+  }
+  context.drawImage(feindIdel.img,24+drawFrameX,0,24,feindIdel.img.height,isoX+40,isoY-10,24,feindIdel.img.height);
+
 }
 
 function update() {
-  //console.log("A: "+gegnerAnzahl);
+  
   switch (sieg) {
     case 0:
       counter++;
@@ -249,85 +331,13 @@ function update() {
       console.log(sieg);
       siegAnzeige();
       break;
+    case 2:
+      console.log("loss");
+      lossAnzeige();
     default:
     break;
   }
 }
-
-function animation(aniType, ) {
-  switch (aniType) {
-    case value:
-      
-      break;
-  
-    default:
-      break;
-  }
-}
-
-/**
- * ReMOVE
- *
-
- function punchUp() {
-  if (feld[player.y-1][player.x]==3)
-  {
-    feld[player.y][player.x];
-    player.y--;
-    feld[player.y][player.x] = 0;
-    player.y++;
-    feld[player.y][player.x] = 2;
-    console.log("punchUp");
-    score++;
-    console.log("Score: "+score);
-    update();
-  }
-}
-
-function punchRight() {
-  if (feld[player.y][player.x+1]==3) {
-    feld[player.y][player.x];
-    player.x++;
-    feld[player.y][player.x] = 0;
-    player.x--;
-    feld[player.y][player.x] = 2;
-    console.log("punchRight");
-    score++;
-    console.log("Score: "+score);
-    update();
-  }
-}
- 
-function punchDown() {
-  if (feld[player.y+1][player.x]==3)
-  {
-    feld[player.y][player.x];
-    player.y++;
-    feld[player.y][player.x] = 0;
-    player.y--;
-    feld[player.y][player.x] = 2;
-    console.log("punchDown");
-    score++;
-    console.log("Score: "+score);
-    update();
-  }
-}
- 
-function punchLeft() {
-  if (feld[player.y][player.x-1]==3)
-  {
-    feld[player.y][player.x];
-    player.x--;
-    feld[player.y][player.x] = 0;
-    player.x++;
-    feld[player.y][player.x] = 2;
-    console.log("punchLeft");
-    score++;
-    console.log("Score: "+score);
-    update();
-  }
-}
-*/
 
 window.onkeydown = function (e) {
   var code = e.keyCode ? e.keyCode : e.which;
