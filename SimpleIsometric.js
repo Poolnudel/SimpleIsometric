@@ -1,6 +1,7 @@
 var feld =  new Array();
 var eingabe = prompt("Wie groß soll das Feld sein?");
 var spielfeldsize = eingabe;
+var pause = 0;
 var score = 0;
 var animtcount = 0;
 for (let y = 0; y < spielfeldsize; y++) {
@@ -190,57 +191,27 @@ function feindFeld(x,y)
 function siegAnzeige() {
   context.clearRect(0,0,canvas.width,canvas.height);
   siegText();
-  playerAnzeige();
-  setTimeout(siegAnzeige, 100);
+  //playerAnzeige();
+  pause = 1;
 }
 
 function lossAnzeige() {
   context.clearRect(0,0,canvas.width,canvas.height);
   lossText();
-  gegnerAnzeige();
-  setTimeout(lossAnzeige, 100);
-}
-
-function playerAnzeige() {
-  for (let i=0;i<feld.length;i++)
-    for (let j=0;j<feld[i].length;j++) {
-      let x = j*kachel.height+offsetX;
-      let y = i*kachel.height+offsetY;
-      let isoX = x-y + offsetX;
-      let isoY = (x+y)/2;
-      let drawFrameX = 0;
-      for (let i = 0; i < animtcount; i++) {
-        drawFrameX = drawFrameX + 24;
-      }
-      context.drawImage(player.img,24+drawFrameX,0,24,player.img.height,isoX+40,isoY-10,24,player.img.height);
-    } 
+  //gegnerAnzeige();
+  pause = 2;
 }
 
 function siegText() {
-  context.font = "50px Zen Kurenaido";
-  context.fillText("SIEG!", window.innerWidth/2, window.innerHeight/2);
-  context.fillText("Score: "+score, window.innerWidth/2, 36+window.innerHeight/2);
-}
-
-function gegnerAnzeige() {
-  for (let i=0;i<feld.length;i++)
-    for (let j=0;j<feld[i].length;j++) {
-      let x = j*kachel.height+offsetX;
-      let y = i*kachel.height+offsetY;
-      let isoX = x-y + offsetX;
-      let isoY = (x+y)/2;
-      let drawFrameX = 0;
-      for (let i = 0; i < animtcount; i++) {
-        drawFrameX = drawFrameX + 24;
-      }
-      context.drawImage(feindIdel.img,24+drawFrameX,0,24,feindIdel.img.height,isoX+40,isoY-10,24,feindIdel.img.height);
-    } 
+  context.font = "30px Zen Kurenaido";
+  context.fillText("SIEG!", 10, 60);
+  context.fillText("Score: "+score, 10, 30);
 }
 
 function lossText() {
-  context.font = "50px Zen Kurenaido";
-  context.fillText("LOSS!", window.innerWidth/2, window.innerHeight/2);
-  context.fillText("Score: "+score, window.innerWidth/2, 36+window.innerHeight/2);
+  context.font = "30px Zen Kurenaido";
+  context.fillText("LOSS!", 10, 60);
+  context.fillText("Score: "+score, 10, 30);
 }
 
 function zeichneFeld() {
@@ -274,9 +245,25 @@ function zeichneFeld() {
     feindDraw(isoX,isoY);
 	}
   }
-  zeitAnzeige();
-  update();
-  setTimeout(zeichneFeld, 100);
+  switch (pause) {
+    case 0:
+      zeitAnzeige();
+      update();
+      setTimeout(zeichneFeld, 100);
+      break;
+  
+    case 1:
+      setTimeout(siegAnzeige, 100);
+      break;
+    
+    case 2:
+      setTimeout(lossAnzeige, 100);
+      break;
+    
+    default:
+      break;
+  }
+
   if (zeit <= 0) {
     sieg = 2;
   } else {
